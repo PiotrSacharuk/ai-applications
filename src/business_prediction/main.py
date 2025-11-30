@@ -1,13 +1,27 @@
 """
 Business Prediction - Main Application
-Uses modular components from modules/ directory
+Uses modular components from business_prediction modules
 """
 import warnings
+import sys
+from pathlib import Path
 
-from prediction_modules.data_loader import load_all_data
-from prediction_modules.preprocessing import preprocess_data
-from prediction_modules.model_training import train_and_evaluate_pipeline
-from prediction_modules.predictions import run_predictions
+# Add project root to path to support both execution methods
+project_root = Path(__file__).parent.parent.parent
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
+
+# Try relative imports first (when run as module), fallback to absolute
+try:
+    from .data_loader import load_all_data
+    from .preprocessing import preprocess_data
+    from .model_training import train_and_evaluate_pipeline
+    from .predictions import run_predictions
+except ImportError:
+    from data_loader import load_all_data
+    from preprocessing import preprocess_data
+    from model_training import train_and_evaluate_pipeline
+    from predictions import run_predictions
 
 warnings.simplefilter("ignore")
 
