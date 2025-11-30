@@ -2,3 +2,36 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data files (if sensitive)
+*.xlsx
+*.xls
+# Keep population.csv as it's in repo
+!data/population.csv
+
+# Logs
+*.log
+
+# Poetry
+poetry.lock
+
+# Temporary files
+*.tmp
+*.bak
+
+*.docx
+*.pdf
