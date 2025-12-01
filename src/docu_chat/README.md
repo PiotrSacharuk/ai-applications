@@ -3,6 +3,39 @@
 ## Description
 FastAPI application for chatting with documents (PDF/DOCX) using RAG (Retrieval-Augmented Generation).
 
+## Architecture
+
+### Modular Structure
+The application is organized into separate modules for maintainability:
+
+- **`config.py`** - Environment variable configuration
+  - Loads all settings from `.env` file
+  - Exports configuration constants for other modules
+
+- **`database.py`** - MongoDB operations
+  - `load_conversation_history(session_id)` - Retrieve chat history
+  - `save_conversation_history(session_id, messages)` - Store conversation
+
+- **`storage.py`** - AWS S3 operations
+  - `download_document_from_s3(filename)` - Download from S3
+  - `upload_document_to_s3(filename)` - Upload to S3
+
+- **`models.py`** - AI model management
+  - `load_embeddings_model()` - HuggingFace embeddings
+  - `load_document(path)` - Load and split documents
+  - `create_vector_store(docs, embeddings)` - FAISS vector store
+  - `create_qa_chain(vectorstore)` - LangChain QA pipeline
+  - `generate_response(qa_chain, query, history)` - Generate answers
+
+- **`api.py`** - FastAPI endpoints
+  - `/chat` - Chat with document
+  - `/uploadFile` - Upload document to S3
+  - `/` - Health check
+
+- **`main.py`** - Application entry point
+  - Imports FastAPI app from `api.py`
+  - Uvicorn server configuration
+
 ## What was fixed automatically:
 - Syntax error: `file_name.tolower()` → `file_name.lower()`
 - Variable error: `session_id` → `chats.session_id`
@@ -12,6 +45,7 @@ FastAPI application for chatting with documents (PDF/DOCX) using RAG (Retrieval-
 - Added `python-dotenv` to `pyproject.toml`
 - Switched to HuggingFace embeddings (free, local)
 - Configured Perplexity API support
+- Modularized monolithic main.py into separate components
 
 ## Manual steps required:
 
