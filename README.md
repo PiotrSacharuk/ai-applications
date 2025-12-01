@@ -65,26 +65,41 @@ poetry run python src/business_prediction/main.py
 ```
 ai-applications/
 ├── src/
-│   ├── chatbot/                   # Simple intent-based chatbot
-│   │   ├── main.py               # Chatbot implementation
+│   ├── chatbot/                                # Simple intent-based chatbot
+│   │   ├── main.py                             # Chatbot implementation
 │   │   └── __init__.py
-│   ├── business_prediction/       # Business analytics & ML predictions
-│   │   ├── main.py               # Main prediction pipeline
-│   │   ├── data_loader.py        # Data loading utilities
-│   │   ├── model_training.py     # ML model training
-│   │   ├── predictions.py        # Prediction generation
-│   │   ├── preprocessing.py      # Data preprocessing
+│   ├── business_prediction/                    # Business analytics & ML predictions
+│   │   ├── main.py                             # Main prediction pipeline
+│   │   ├── data_loader.py                      # Data loading utilities
+│   │   ├── model_training.py                   # ML model training
+│   │   ├── predictions.py                      # Prediction generation
+│   │   ├── preprocessing.py                    # Data preprocessing
 │   │   └── __init__.py
-│   └── docu_chat/                 # Document chat application
-│       ├── main.py               # Main FastAPI app
+│   └── docu_chat/                              # Document chat RAG application
+│       ├── main.py                             # Application entry point
+│       ├── api.py                              # FastAPI endpoints
+│       ├── config.py                           # Configuration management
+│       ├── interfaces.py                       # Abstract provider interfaces
+│       ├── factory.py                          # Provider factory pattern
+│       ├── adapters/                           # Pluggable provider implementations
+│       │   ├── storage/                        # Document storage providers
+│       │   │   └── s3_storage.py               # AWS S3 (implemented)
+│       │   ├── database/                       # Conversation storage providers
+│       │   │   └── mongo_database.py           # MongoDB (implemented)
+│       │   ├── embeddings/                     # Embedding model providers
+│       │   │   └── huggingface_embeddings.py   # HuggingFace (implemented)
+│       │   └── llm/                            # LLM providers
+│       │       └── perplexity_llm.py           # Perplexity AI (implemented)
 │       └── __init__.py
-├── docs/                          # Documentation
-│   ├── SETUP_DOCU_CHAT.md        # Document chat setup guide
-│   ├── AWS_SETUP.md              # AWS S3 configuration
-│   └── MONGODB_SETUP.md          # MongoDB Atlas setup
-├── data/                          # Data files
-├── .env.example                   # Environment template
-└── pyproject.toml                # Poetry dependencies
+├── docs/                                       # Documentation
+│   ├── AWS_SETUP.md                            # AWS S3 configuration
+│   └── MONGODB_SETUP.md                        # MongoDB Atlas setup
+├── data/                                       # Data files
+│   └── population.csv
+├── .env.example                                # Environment template
+├── .vscode/
+│   └── settings.json                           # VS Code Python configuration
+└── pyproject.toml                              # Poetry dependencies
 ```
 
 ## Requirements
