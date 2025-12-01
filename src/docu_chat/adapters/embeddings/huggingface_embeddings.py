@@ -2,7 +2,7 @@
 HuggingFace Embeddings Implementation (local, free)
 """
 from typing import List
-from langchain_community.embeddings import HuggingFaceEmbeddings as HFEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings as HFEmbeddings
 from ...interfaces import EmbeddingsProvider
 
 

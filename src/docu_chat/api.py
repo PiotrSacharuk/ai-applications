@@ -130,7 +130,7 @@ async def create_chat_message(chats: ChatMessageSent):
 
         # Generate response
         with get_openai_callback() as cb:
-            answer = qa_chain({
+            answer = qa_chain.invoke({
                 "question": chats.user_input,
                 "chat_history": chat_history,
             })
