@@ -4,7 +4,7 @@ UI components and utilities for Streamlit interface
 import streamlit as st
 import time
 import os
-from .api_client import chat
+from api_client import chat
 
 
 def initialize_session_state():

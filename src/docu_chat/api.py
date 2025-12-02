@@ -28,9 +28,10 @@ from langchain_community.document_loaders import PyPDFLoader, Docx2txtLoader
 from langchain_community.callbacks import get_openai_callback
 from langchain_classic.chains import ConversationalRetrievalChain
 from langchain_openai import ChatOpenAI
+from langchain_core.prompts import PromptTemplate
 
 from .factory import ProviderFactory
-from .config import LLM_MODEL, OPENAI_API_BASE
+from .config import LLM_MODEL, LLM_TEMPERATURE, OPENAI_API_BASE
 
 
 # Initialize providers from factory
@@ -88,8 +89,13 @@ async def create_chat_message(chats: ChatMessageSent):
         # Load document
         if local_file.lower().endswith(".docx"):
             loader = Docx2txtLoader(file_path=local_file)
-        else:
+        elif local_file.lower().endswith(".pdf"):
             loader = PyPDFLoader(file_path=local_file)
+        else:
+            return JSONResponse(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                content={"detail": "Unsupported file format. Only PDF and DOCX are supported."}
+            )
 
         data = loader.load()
 
@@ -115,14 +121,40 @@ async def create_chat_message(chats: ChatMessageSent):
         # Create LLM
         llm = ChatOpenAI(
             model_name=LLM_MODEL,
-            temperature=0.0,
+            temperature=LLM_TEMPERATURE,
             openai_api_base=OPENAI_API_BASE
         )
 
-        # Create QA chain
+        # Create QA chain with custom prompt to force document-only responses
+        condense_question_prompt = PromptTemplate.from_template(
+            """Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question.
+
+Chat History:
+{chat_history}
+Follow Up Input: {question}
+Standalone question:"""
+        )
+
+        qa_prompt = PromptTemplate.from_template(
+            """You are an AI assistant that ONLY answers questions based on the provided document context.
+DO NOT use any external knowledge or internet sources.
+If the answer is not in the document, say "I cannot find this information in the provided document."
+
+IMPORTANT: Always answer in the SAME LANGUAGE as the question. If the question is in Polish, answer in Polish. If in English, answer in English.
+
+Context from document:
+{context}
+
+Question: {question}
+
+Answer based ONLY on the document above, in the SAME LANGUAGE as the question:"""
+        )
+
         qa_chain = ConversationalRetrievalChain.from_llm(
             llm,
-            retriever=vectorstore.as_retriever()
+            retriever=vectorstore.as_retriever(),
+            condense_question_prompt=condense_question_prompt,
+            combine_docs_chain_kwargs={"prompt": qa_prompt}
         )
 
         # Load conversation history from database (MongoDB/Postgres/Redis)
@@ -134,6 +166,11 @@ async def create_chat_message(chats: ChatMessageSent):
                 "question": chats.user_input,
                 "chat_history": chat_history,
             })
+
+            # Remove <think> tags from Perplexity reasoning output
+            import re
+            if "answer" in answer and answer["answer"]:
+                answer["answer"] = re.sub(r'<think>.*?</think>\s*', '', answer["answer"], flags=re.DOTALL)
 
             # Add token usage information
             answer["total_tokens_used"] = cb.total_tokens

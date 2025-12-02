@@ -9,7 +9,7 @@ from ...config import OPENAI_API_BASE
 class PerplexityLLM:
     """Perplexity AI LLM (uses OpenAI-compatible API)"""
 
-    def __init__(self, model: str = "sonar", api_key: str = None, temperature: float = 0.0):
+    def __init__(self, model: str = "sonar-reasoning", api_key: str = None, temperature: float = 0.0):
         """
         Initialize Perplexity LLM
 
