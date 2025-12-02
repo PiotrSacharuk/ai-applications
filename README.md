@@ -25,8 +25,28 @@ cp .env.example .env
 # Install dependencies
 poetry install
 
-# Run
+# Run backend
 poetry run uvicorn src.docu_chat.main:app --reload
+```
+
+### 1.1 Document Chat Frontend (docu_chat_frontend)
+Streamlit web interface for the DocuChat RAG application.
+
+**Documentation:** [src/docu_chat_frontend/README.md](src/docu_chat_frontend/README.md)
+
+**Features:**
+- Interactive web UI for document chat
+- File upload (PDF/DOCX)
+- Real-time streaming responses
+- Session management
+- Clean Streamlit interface
+
+**Quick Start:**
+```bash
+# Ensure backend is running first (port 8000)
+
+# Run frontend
+poetry run streamlit run src/docu_chat_frontend/main.py
 ```
 
 ### 2. Simple Chatbot (chatbot)
@@ -91,6 +111,11 @@ ai-applications/
 │       │   └── llm/                            # LLM providers
 │       │       └── perplexity_llm.py           # Perplexity AI (implemented)
 │       └── __init__.py
+│   └── docu_chat_frontend/                     # Document chat web interface
+│       ├── main.py                             # Streamlit application
+│       ├── api_client.py                       # Backend API client
+│       ├── ui_components.py                    # UI utilities
+│       └── __init__.py
 ├── docs/                                       # Documentation
 │   ├── AWS_SETUP.md                            # AWS S3 configuration
 │   └── MONGODB_SETUP.md                        # MongoDB Atlas setup
@@ -127,12 +152,14 @@ cp .env.example .env
 See `.env.example` for required configuration. Each application may need different services:
 
 - **docu_chat**: Perplexity API, AWS S3, MongoDB Atlas
+- **docu_chat_frontend**: Requires docu_chat backend running
 - **chatbot**: No external services needed
 - **business_prediction**: No external services needed
 
 ## Documentation
 
-- [Document Chat Setup](src/docu_chat/README.md)
+- [Document Chat Backend](src/docu_chat/README.md)
+- [Document Chat Frontend](src/docu_chat_frontend/README.md)
 - [AWS Configuration](docs/AWS_SETUP.md)
 - [MongoDB Configuration](docs/MONGODB_SETUP.md)
 

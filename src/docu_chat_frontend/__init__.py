@@ -1,0 +1,3 @@
+"""
+DocuChat Frontend Package
+"""
